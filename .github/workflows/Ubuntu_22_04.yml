@@ -1,8 +1,9 @@
 name: Ubuntu 22.04
 
 on:
-  workflow_call:
   workflow_dispatch:
+  repository_dispatch:
+    types: [run-distros]
 
 jobs:
   ubuntu-22-04:
