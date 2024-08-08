@@ -1,8 +1,7 @@
 name: Execute - Test Install FOG
 
 on:
-  repository_dispatch:
-    types: [execute-all-distros]
+  workflow_call:
 
 defaults:
   run:
