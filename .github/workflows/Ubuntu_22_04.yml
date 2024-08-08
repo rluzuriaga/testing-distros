@@ -1,0 +1,11 @@
+name: Ubuntu 22.04
+
+on:
+  workflow_call:
+
+jobs:
+  ubuntu-22-04:
+    uses: ./.github/workflows/reusable_workflow.yml
+    with:
+      distro: "docker.io/library/ubuntu:22.04"
+      package_man: "apt"

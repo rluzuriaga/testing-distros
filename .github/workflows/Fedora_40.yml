@@ -1,0 +1,11 @@
+name: Fedora 40
+
+on:
+  workflow_call:
+
+jobs:
+  fedora-40:
+    uses: ./.github/workflows/reusable_workflow.yml
+    with:
+      distro: "quay.io/fedora/fedora-minimal:40"
+      package_man: "dnf"

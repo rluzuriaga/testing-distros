@@ -1,0 +1,59 @@
+name: "Reusable Workflow - Don't use"
+
+on:
+  workflow_call:
+    inputs:
+      distro:
+        required: true
+        type: string
+      package_man:
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  reusable_workflow:
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - name: Make container name
+        run: |
+          input_distro=${{ inputs.distro }}
+          distro_name_and_ver=$(echo input_distro | awk -F '/' '{print $NF}')
+          container_name=${distro_name_and_ver/:/_}
+          echo "CONTAINER_NAME=$container_name" >> $GITHUB_ENV
+      
+      - name: Check if additional package is needed
+        run: |
+          if [[ ${{ inputs.package_man}} == "apt" ]]; then
+            echo "ADDITIONAL_PKG=libpam-systemd" >> $GITHUB_ENV
+          else
+            echo "ADDITIONAL_PKG=" >> $GITHUB_ENV
+          fi
+      
+      - name: Update container
+        run: |
+          if [[ ${{ inputs.package_man}} == "apt" ]]; then
+            echo "UPDATE_COMMAND=sudo apt update && sudo apt upgrade -y" >> $GITHUB_ENV
+          else
+            echo "UPDATE_COMMAND=sudo dnf update -y" >> $GITHUB_ENV
+          fi
+
+      - name: Install Distrobox
+        run: curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sudo sh
+
+      - name: Create Distrobox
+        run: |
+          distrobox create --name $CONTAINER_NAME --image ${{ inputs.distro }} \
+            --additional-packages "git systemd ${{ inputs.package_man }} sudo $ADDITIONAL_PKG" \
+            --init-hooks "$UPDATE_COMMAND" \
+            --init --pull --root --unshare-all
+      
+      - name: Clone FOG
+        run: distrobox enter --root $CONTAINER_NAME -- git clone https://github.com/FOGProject/fogproject.git
+      
+      - name: Install FOG
+        run: distrobox enter --root $CONTAINER_NAME -- sudo ./fogproject/bin/installfog.sh -y
