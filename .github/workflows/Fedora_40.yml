@@ -1,7 +1,9 @@
 name: Fedora 40
 
 on:
-  workflow_call:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [run-distros]
 
 jobs:
   fedora-40:

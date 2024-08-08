@@ -1,7 +1,9 @@
 name: Debian 12
 
 on:
-  workflow_call:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [run-distros]
 
 jobs:
   debian-12:

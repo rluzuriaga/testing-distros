@@ -1,7 +1,9 @@
 name: Ubuntu 24.04
 
 on:
-  workflow_call:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [run-distros]
 
 jobs:
   ubuntu-24-04:
