@@ -53,7 +53,7 @@ jobs:
             --init --pull --root --unshare-all
       
       - name: Clone FOG
-        run: distrobox enter --root $CONTAINER_NAME -- git clone https://github.com/FOGProject/fogproject.git
+        run: distrobox enter --root $CONTAINER_NAME -- git clone -b dev-branch https://github.com/FOGProject/fogproject.git
       
       - name: Install FOG
         run: distrobox enter --root $CONTAINER_NAME -- sudo ./fogproject/bin/installfog.sh -y
