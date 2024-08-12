@@ -27,7 +27,7 @@ jobs:
 
       - name: Run all distros
         run: |
-          for fn in $(ls ./.github/workflows/distros); do
+          for fn in $(cd ./.github/workflows && ls distro_*); do
             curl -L \
             -X POST \
             -H "Accept: application/vnd.github+json" \
