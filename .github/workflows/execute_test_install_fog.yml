@@ -40,6 +40,7 @@ jobs:
           for fn in $(cd ./.github/workflows && ls distro_*); do
 
             while [ "$run_status" == "in_progress" ] || [ "$run_status" == "queued" ]; do
+              echo "here"
               run_status=$(curl -s \
                             -H "Accept: application/vnd.github+json" \
                             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
