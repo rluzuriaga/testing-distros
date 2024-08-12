@@ -37,6 +37,8 @@ jobs:
       - name: Check if all distros ran
         run: |
           sleep 30
+          run_status="in_progress"
+          
           for fn in $(cd ./.github/workflows && ls distro_*); do
 
             while [ "$run_status" == "in_progress" ] || [ "$run_status" == "queued" ]; do
