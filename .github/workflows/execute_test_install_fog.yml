@@ -3,12 +3,6 @@ name: Execute - Test Install FOG
 on:
   repository_dispatch:
     types: [fog-install-test]
-  workflow_run: 
-    workflows: [
-      Debian 12,
-      Fedora 40
-    ]
-    types: completed
 
 defaults:
   run:
@@ -20,17 +14,29 @@ permissions:
 jobs:
   run-all-distros:
     runs-on: ubuntu-22.04
+
     steps:
-      - name: Trigger Debian 12 Workflow
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'debian_12.yml', // Name of the workflow file
-              ref: 'main', // Branch to trigger the workflow on
-            })
+      - name: Checkout code
+        uses: actions/checkou@v4
+      
+      # - name: Create calling function
+      #   run: |
+      #     function run_distro_test() {
+            
+      #     }
+
+      - name: Run all distros
+        run: |
+          for fn in $(ls ./.github/workflows/distros) {
+            curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/$fn/dispatches \
+            -d '{"ref":"main"}'
+          }
+
 
       # - name: Run all distros
       #   run: |
