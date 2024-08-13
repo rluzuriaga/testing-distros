@@ -48,8 +48,8 @@ jobs:
         ${{fromJson(needs.get-all-distros-matrix.outputs.matrix)}}
 
     steps:
-      # - name: Checkout code
-      #   uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       
       - name: Run all distros
         run: gh workflow run ${{ matrix.distros }}
