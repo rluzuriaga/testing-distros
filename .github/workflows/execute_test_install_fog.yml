@@ -36,7 +36,7 @@ jobs:
             json_array=$(echo "$json_array" | jq --arg distro "$distro_file" '. + [$distro]')
           done
 
-          json=$(jq -n --argjson distros "$json_array" '{"include": [{"distros": $distros}]}')
+          json=$(jq -n --argjson distros "$json_array" '{"distros": $distros}')
 
           echo "matrix=$( echo "$JSON" )" >> $GITHUB_OUTPUT
 
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        ${{ fromJson(needs.get-all-distros-matrix.outputs.matrix) }}
+        ${{fromJson(needs.get-all-distros-matrix.outputs.matrix)}}
 
     steps:
       - name: Checkout code
