@@ -31,13 +31,10 @@ jobs:
         run: |
           cd .github/workflows/
           json_array=$(jq -n '[]')
-
           for distro_file in $(ls distro_*); do
             json_array=$(echo "$json_array" | jq --arg distro "$distro_file" '. + [$distro]')
           done
-
           json=$(jq -n --argjson distros "$json_array" '{"distros": $distros}')
-
           echo "matrix=$( echo "$JSON" )" >> $GITHUB_OUTPUT
           echo $matrix
 
