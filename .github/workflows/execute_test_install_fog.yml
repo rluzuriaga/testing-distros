@@ -54,6 +54,8 @@ jobs:
       - name: Run all distros
         # uses: ./.github/workflows/${{ matrix.distros }}
         run: gh workflow run ${{ matrix.distros }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
       # - name: Run all distros
