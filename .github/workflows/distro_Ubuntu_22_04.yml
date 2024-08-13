@@ -2,6 +2,7 @@ name: Ubuntu 22.04
 
 on:
   workflow_dispatch:
+  workflow_call: 
 
 jobs:
   ubuntu-22-04:
