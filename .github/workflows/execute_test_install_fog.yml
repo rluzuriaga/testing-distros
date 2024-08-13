@@ -13,63 +13,95 @@ permissions:
   contents: write
 
 jobs:
-  run-all-distros:
+  get-all-distros-matrix:
     runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set matrix of distros
+        id: set-matrix
+        run: |
+          cd .github/workflows/
+          json_array=$(jq -n '[]')
+
+          for distro_file in $(ls distro_*); do
+            json_array=$(echo "$json_array" | jq --arg distro "$distro_file" '. + [$distro]')
+          done
+
+          json=$(jq -n --argjson distros "$json_array" '{"distros": $distros}')
+
+          echo "matrix=$( echo "$JSON" )" >> $GITHUB_OUTPUT
+
+  run-all-distros:
+    needs: get-all-distros-matrix
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        ${{ fromJson(needs.get-all-distros-matrix.outputs.matrix) }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      
       - name: Run all distros
-        run: |
-          for fn in $(cd ./.github/workflows && ls distro_*); do
-            echo "$fn"
+        # uses: ./.github/workflows/${{ matrix.distros }}
+        run: echo "${{ matrix.distros }}"
 
-            curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$fn/dispatches" \
-            -d '{"ref":"main"}'
-          done
 
-      - name: Check if all distros ran
-        run: |
-          sleep 30
-          run_status="in_progress"
+      # - name: Run all distros
+      #   run: |
+      #     for fn in $(cd ./.github/workflows && ls distro_*); do
+      #       echo "$fn"
+
+      #       curl -L \
+      #       -X POST \
+      #       -H "Accept: application/vnd.github+json" \
+      #       -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+      #       -H "X-GitHub-Api-Version: 2022-11-28" \
+      #       "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$fn/dispatches" \
+      #       -d '{"ref":"main"}'
+      #     done
+
+      # - name: Check if all distros ran
+      #   run: |
+      #     sleep 30
+      #     run_status="in_progress"
           
-          for fn in $(cd ./.github/workflows && ls distro_*); do
+      #     for fn in $(cd ./.github/workflows && ls distro_*); do
 
-            while [ "$run_status" == "in_progress" ] || [ "$run_status" == "queued" ]; do
-              echo "here"
-              run_status=$(curl -s \
-                            -H "Accept: application/vnd.github+json" \
-                            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                            -H "X-GitHub-Api-Version: 2022-11-28" \
-                            https://api.github.com/repos/${{ github.repository }}/actions/workflows/$fn/runs \
-                            | jq -r '.workflow_runs[0].status')
-              sleep 10
-            done
+      #       while [ "$run_status" == "in_progress" ] || [ "$run_status" == "queued" ]; do
+      #         echo "here"
+      #         run_status=$(curl -s \
+      #                       -H "Accept: application/vnd.github+json" \
+      #                       -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+      #                       -H "X-GitHub-Api-Version: 2022-11-28" \
+      #                       https://api.github.com/repos/${{ github.repository }}/actions/workflows/$fn/runs \
+      #                       | jq -r '.workflow_runs[0].status')
+      #         sleep 10
+      #       done
           
-          done
+      #     done
 
-          #   conclusion=$(curl -s \
-          #     -H "Accept: application/vnd.github+json" \
-          #     -H "Authorization: Bearer $GITHUB_TOKEN" \
-          #     -H "X-GitHub-Api-Version: 2022-11-28" \
-          #     https://api.github.com/repos/${{ github.repository }}/actions/workflows/$workflow_file/runs?branch=main&status=all \
-          #     | jq -r '.workflow_runs[0].conclusion')
+      #       conclusion=$(curl -s \
+      #         -H "Accept: application/vnd.github+json" \
+      #         -H "Authorization: Bearer $GITHUB_TOKEN" \
+      #         -H "X-GitHub-Api-Version: 2022-11-28" \
+      #         https://api.github.com/repos/${{ github.repository }}/actions/workflows/$workflow_file/runs?branch=main&status=all \
+      #         | jq -r '.workflow_runs[0].conclusion')
 
-          #   if [ "$conclusion" != "success" ]; then
-          #     echo "Workflow $workflow_file did not complete successfully."
-          #     exit 1
-          #   else
-          #     echo "Workflow $workflow_file completed successfully."
-          #   fi
-          # }
+      #       if [ "$conclusion" != "success" ]; then
+      #         echo "Workflow $workflow_file did not complete successfully."
+      #         exit 1
+      #       else
+      #         echo "Workflow $workflow_file completed successfully."
+      #       fi
+      #     }
 
-          # while IFS= read -r workflow; do
-          #   echo "Checking status of $workflow"
-          #   check_workflow_status "$workflow"
-          # done < workflow_list.txt
+      #     while IFS= read -r workflow; do
+      #       echo "Checking status of $workflow"
+      #       check_workflow_status "$workflow"
+      #     done < workflow_list.txt
