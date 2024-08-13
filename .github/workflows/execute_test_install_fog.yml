@@ -69,9 +69,13 @@ jobs:
 
       - name: Get run IDs
         run: |
-          declare -a run_ids
-          run_ids+=$(gh run list --repo ${{ github.repository }} --workflow ${{ matrix.distros }} --json databaseId --limit 1 | jq -r '.[0].databaseId')
-          echo "$run_ids"
+          run_id=$(gh run list --repo ${{ github.repository }} --workflow ${{ matrix.distros }} --json databaseId --limit 1 | jq -r '.[0].databaseId')
+          run_status=""
+          while [[ $run_status != "success" && $run_status != "failure" ]]; do
+            sleep 30
+            run_status=$(gh run view --repo ${{ github.repository }} $run_id --exit-status --json conclusion | jq -r '.conclusion')
+          done
+          echo "$run_status"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
