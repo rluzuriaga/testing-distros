@@ -34,8 +34,7 @@ jobs:
           for distro_file in $(ls distro_*); do
             json_array=$(echo "$json_array" | jq --arg distro "$distro_file" '. + [$distro]')
           done
-          echo "{\"distros\": $json_array}" > temp_matrix.json
-          matrix=$(cat temp_matrix.json)
+          matrix=$(jq -n --argjson distros "$json_array" '{"distros": $distros}')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   run-all-distros:
