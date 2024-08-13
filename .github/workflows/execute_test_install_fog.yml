@@ -35,7 +35,8 @@ jobs:
             json_array=$(echo "$json_array" | jq --arg distro "$distro_file" '. + [$distro]')
           done
           # json="{\"distros\": $json_array}"
-          echo "matrix={\"distros\": $json_array}" >> $GITHUB_OUTPUT
+          echo "matrix={\"include\": {\"distros\": $json_array}}" >> $GITHUB_OUTPUT
+          # echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
           echo $matrix
 
   run-all-distros:
