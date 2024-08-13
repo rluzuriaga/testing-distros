@@ -32,7 +32,7 @@ jobs:
           cd .github/workflows/
           json_array=$(jq -n '[]')
           for distro_file in $(ls distro_*); do
-            json_array=$(echo "$json_array" | jq --arg distro "$distro_file" '. + [$distro]')
+            json_array=$(echo "$json_array" | jq --arg distro "$distro_file" ', + [$distro]')
           done
           # json="{\"distros\": $json_array}"
           echo "matrix={\"include\": {\"distros\": $json_array}}" >> $GITHUB_OUTPUT
