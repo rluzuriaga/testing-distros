@@ -1,6 +1,7 @@
 name: Execute - Test Install FOG
 
 on:
+  workflow_dispatch:
   repository_dispatch:
     types: [fog-install-test]
 
@@ -32,7 +33,7 @@ jobs:
             json_array=$(echo "$json_array" | jq --arg distro "$distro_file" '. + [$distro]')
           done
 
-          json=$(jq -n --argjson distros "$json_array" '{"distros": $distros}')
+          json=$(jq -n --argjson distros "$json_array" '{"include": [{"distros": $distros}]}')
 
           echo "matrix=$( echo "$JSON" )" >> $GITHUB_OUTPUT
 
