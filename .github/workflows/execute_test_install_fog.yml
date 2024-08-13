@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Run all distros
-        uses: ./.github/workflows/${{ matrix.distros }}
+        uses: ./.github/workflows/"${{ matrix.distros }}"
         # run: echo "${{ matrix.distros }}"
 
 
