@@ -24,3 +24,5 @@ jobs:
           color: 0xff0000
           description: "Just a test - Failing on purpose"
           url: "https://github.com/rluzuriaga/fogproject"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
