@@ -65,8 +65,8 @@ jobs:
         ${{fromJson(needs.get-all-distros-matrix.outputs.matrix)}}
     
     steps:
-      - name: Wait a bit for the runs to start
-        run: sleep 15
+      - name: Wait a minute for the runs to start
+        run: sleep 60
 
       - name: Get run IDs
         run: |
@@ -74,7 +74,7 @@ jobs:
           echo "RUN_ID=$run_id" >> $GITHUB_ENV
       
       - name: Check if distro workflow passed or failed
-        run:
+        run: |
           run_status=""
           while [[ $run_status != "success" && $run_status != "failure" ]]; do
             sleep 15
