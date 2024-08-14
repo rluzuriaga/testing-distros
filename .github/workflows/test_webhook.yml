@@ -18,7 +18,7 @@ jobs:
       webhook: ${{ secrets.DISCORD_TEST }}
       content: "Hey <@everyone>"
       title: Install tests
-      status: ${{ needs.check-all-tests-completed-successfully.result }}
+      status: ${{ needs.fedora-40.result }}
       color: 0xff0000
       description: "Just a test - Failing on purpose"
       url: "https://github.com/rluzuriaga/fogproject"
