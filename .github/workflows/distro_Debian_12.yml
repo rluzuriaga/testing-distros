@@ -9,4 +9,4 @@ jobs:
     uses: ./.github/workflows/reusable_workflow.yml
     with:
       distro: "docker.io/library/debian:12-slim"
-      package_man: "dnf"
+      package_man: "apt"
