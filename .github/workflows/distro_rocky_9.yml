@@ -8,5 +8,5 @@ jobs:
   fedora-40:
     uses: ./.github/workflows/reusable_workflow.yml
     with:
-      distro: "quay.io/fedora/ockylinux:9-minimal"
+      distro: "docker.io/library/rockylinux:9-minimal"
       package_man: "dnf"
