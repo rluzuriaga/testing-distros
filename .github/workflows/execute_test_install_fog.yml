@@ -71,10 +71,14 @@ jobs:
       - name: Get run IDs
         run: |
           run_id=$(gh run list --repo ${{ github.repository }} --workflow ${{ matrix.distros }} --json databaseId --limit 1 | jq -r '.[0].databaseId')
+          echo "RUN_ID=$run_id" >> $GITHUB_ENV
+      
+      - name: Check if distro workflow passed or failed
+        run:
           run_status=""
           while [[ $run_status != "success" && $run_status != "failure" ]]; do
-            sleep 30
-            run_status=$(gh run view --repo ${{ github.repository }} $run_id --exit-status --json conclusion | jq -r '.conclusion')
+            sleep 15
+            run_status=$(gh run view --repo ${{ github.repository }} ${{ env.RUN_ID }} --exit-status --json conclusion | jq -r '.conclusion')
           done
           
           if [[ $run_status == "failure" ]]; then
