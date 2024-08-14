@@ -23,9 +23,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      # - name: Install jq
-      #   run: sudo apt-get install jq -y
-      
       - name: Set matrix of distros
         id: set-matrix
         run: |
@@ -74,7 +71,7 @@ jobs:
           echo "RUN_ID=$run_id" >> $GITHUB_ENV
       
       - name: Check if distro workflow passed or failed
-        run: 
+        run: |
           run_status=""
           while [[ $run_status != "success" && $run_status != "failure" ]]; do
             sleep 15
