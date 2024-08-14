@@ -75,9 +75,13 @@ jobs:
             sleep 30
             run_status=$(gh run view --repo ${{ github.repository }} $run_id --exit-status --json conclusion | jq -r '.conclusion')
           done
-          echo "$run_status"
+          
+          if [[ $run_status == "failure" ]]; then
+            exit 1
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
 
       # - name: Run all distros
       #   run: |
