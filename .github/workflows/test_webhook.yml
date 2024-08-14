@@ -1,7 +1,6 @@
 name: Fedora 40
 
 on:
-  workflow_dispatch:
   workflow_call:
 
 jobs:
@@ -12,13 +11,16 @@ jobs:
       package_man: "apt"
 
   test-webhook:
+    runs-on: ubuntu-22.04
     needs: fedora-40
-    uses: sarisia/actions-status-discord@v1
-    with:
-      webhook: ${{ secrets.DISCORD_TEST }}
-      content: "Hey <@everyone>"
-      title: Install tests
-      status: ${{ needs.fedora-40.result }}
-      color: 0xff0000
-      description: "Just a test - Failing on purpose"
-      url: "https://github.com/rluzuriaga/fogproject"
+    if: always()
+    steps:
+      - uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_TEST }}
+          content: "Hey <@everyone>"
+          title: Install tests
+          status: ${{ needs.fedora-40.result }}
+          color: 0xff0000
+          description: "Just a test - Failing on purpose"
+          url: "https://github.com/rluzuriaga/fogproject"
