@@ -59,7 +59,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ${{fromJson(needs.get-all-distros-matrix.outputs.matrix)}}
+        ${{ fromJson(needs.get-all-distros-matrix.outputs.matrix) }}
     
     steps:
       - name: Wait a minute for the runs to start
@@ -69,6 +69,8 @@ jobs:
         run: |
           run_id=$(gh run list --repo ${{ github.repository }} --workflow ${{ matrix.distros }} --json databaseId --limit 1 | jq -r '.[0].databaseId')
           echo "RUN_ID=$run_id" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Check if distro workflow passed or failed
         run: |
