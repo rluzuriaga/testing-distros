@@ -9,4 +9,4 @@ jobs:
     uses: ./.github/workflows/reusable_workflow.yml
     with:
       distro: "quay.io/fedora/fedora-minimal:40"
-      package_man: "dnf"
+      package_man: "apt"
