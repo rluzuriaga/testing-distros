@@ -24,7 +24,7 @@ jobs:
           input_distro=${{ inputs.distro }}
           distro_name_and_ver=$(echo input_distro | awk -F '/' '{print $NF}')
           container_name=${distro_name_and_ver/:/_}
-          CONTAINER_NAME="$container_name"
+          echo "CONTAINER_NAME=$container_name" >> $GITHUB_ENV
       
       - name: Check if additional package is needed
         run: |
