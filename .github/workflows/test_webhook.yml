@@ -1,4 +1,4 @@
-name: Fedora 40
+name: test hook
 
 on:
   workflow_call:
