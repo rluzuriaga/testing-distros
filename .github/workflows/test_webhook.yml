@@ -1,7 +1,7 @@
 name: test hook
 
 on:
-  workflow_call:
+  workflow_dispatch: 
 
 jobs:
   fedora-40:
