@@ -75,7 +75,7 @@ jobs:
           run_status=""
           while [[ $run_status != "success" && $run_status != "failure" ]]; do
             sleep 15
-            run_status=$(gh run view --repo ${{ github.repository }} $env.RUN_ID --exit-status --json conclusion | jq -r '.conclusion')
+            run_status=$(gh run view --repo ${{ github.repository }} ${{ env.RUN_ID }} --exit-status --json conclusion | jq -r '.conclusion')
           done
           
           if [[ $run_status == "failure" ]]; then
